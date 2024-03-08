@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="left_margin">12dp</dimen>
+    <dimen name="waving_hand_size">20</dimen>
+
+</resources>
