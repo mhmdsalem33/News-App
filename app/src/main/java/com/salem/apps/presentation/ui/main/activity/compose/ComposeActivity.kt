@@ -112,14 +112,14 @@ fun NewsItem(newsItem: ArticleModel) {
                 text = newsItem.author ?: "",
                 modifier = Modifier.padding(start = 20.dp),
                 fontFamily = omnesArabicBold,
-                fontSize = 14.sp
+                fontSize = 11.sp
             )
             // text source
             Text(
                 text = newsItem.source?.name ?: "",
                 modifier = Modifier.padding(end = 20.dp),
                 fontFamily = omnesArabic,
-                fontSize = 12.sp
+                fontSize = 11.sp
             )
         }
         SpaceHeight()
@@ -128,7 +128,7 @@ fun NewsItem(newsItem: ArticleModel) {
             text = newsItem.title ?: "",
             modifier = Modifier.padding(start = 20.dp, end = 20.dp),
             fontFamily = omnesArabicBold,
-            fontSize = 10.sp
+            fontSize = 8.sp
         )
         SpaceHeight()
         // text description
