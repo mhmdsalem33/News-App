@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class GetBitCoinNewsUseCase @Inject constructor(private val mainRepository: MainRepository) {
-    suspend operator fun invoke(query : String , apiKey : String)  : Flow<ResponseState<NewsModel>> = flow {
+    suspend operator fun invoke( query : String , apiKey : String)  : Flow<ResponseState<NewsModel>> = flow {
         try {
             emit(ResponseState.Loading())
             val response = safeApiCall(

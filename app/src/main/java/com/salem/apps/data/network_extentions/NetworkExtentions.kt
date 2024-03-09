@@ -16,16 +16,6 @@ import java.io.File
 import java.io.IOException
 
 
-//fun File.createMultiPartImage(key: String): MultipartBody.Part? {
-//    return if (this.exists())
-//        MultipartBody.Part.createFormData(key, this.name, this.createRequestBodyImage())
-//    else
-//        null
-//}
-//
-//fun File.createRequestBodyImage(): RequestBody {
-//    return this.asRequestBody("image/*".toMediaTypeOrNull())
-//}
 
 fun File.createMultiPartImage(key: String): MultipartBody.Part? {
     return if (this.exists()) {
@@ -71,28 +61,6 @@ fun convertToMap(requestBody: MultipartBody): Map<String, RequestBody> {
     return params
 }
 
-
-suspend fun <T : Any> safeApiCall(apiCall: suspend () -> Response<T>): ResponseState<T> {
-    return try {
-        val apiResponse = apiCall.invoke()
-        if (apiResponse.isSuccessful) {
-            apiResponse.body()?.let {
-                ResponseState.Success(it)
-          } ?:  ResponseState.NullData()
-        } else if ( apiResponse.code() == 401 ) {
-                ResponseState.Unauthorized()
-       } else {
-            val error = apiResponse.errorBody()?.parseErrorBody<BaseResponse>()
-            val errorMessage = error?.message ?: "Unknown error"
-                ResponseState.Error(errorMessage)
-       }
-    } catch (e: IOException) {
-        ResponseState.Error(e.message ?: "Network error")
-    } catch (e: Exception) {
-        ResponseState.Error(e.message ?: "Unknown error")
-    }
-}
-
 suspend fun <T : Any, R : Any> safeApiCall(
     apiCall: suspend () -> Response<T>,
     mapper: (T) -> R): ResponseState<R> {
@@ -103,7 +71,9 @@ suspend fun <T : Any, R : Any> safeApiCall(
                 ResponseState.Success(mapper(it))
             } ?: ResponseState.NullData()
         } else {
-            ResponseState.Error("something went wrong ${apiResponse.message()}")
+            val error = apiResponse.errorBody()?.parseErrorBody<BaseResponse>()
+            val errorMessage = error?.message ?: "Unknown error"
+            ResponseState.Error(errorMessage)
         }
     } catch (e: IOException) {
         ResponseState.Error(e.message ?: "Network error")

@@ -17,6 +17,18 @@
             android:layout_height="match_parent">
 
 
+
+            <Button
+                android:id="@+id/btn_compose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Go to compose"
+                app:layout_constraintEnd_toEndOf="@+id/right_guideline"
+                app:layout_constraintStart_toStartOf="@+id/left_guideline"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="@dimen/_10sdp"
+                />
+
             <!-- edt text password  -->
             <com.salem.apps.presentation.component.InputField
                 android:id="@+id/search"
@@ -31,7 +43,7 @@
                 app:inputTypeEdt="text"
                 app:layout_constraintEnd_toEndOf="@+id/right_guideline"
                 app:layout_constraintStart_toStartOf="@+id/left_guideline"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_compose"
                 app:leftIconSrc="@drawable/loupe"
                 app:leftIconTint="@color/black"
                 app:mainLayoutBackground="@drawable/shape_gray_curved"

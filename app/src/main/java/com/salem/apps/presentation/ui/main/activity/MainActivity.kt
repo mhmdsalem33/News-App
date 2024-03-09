@@ -1,8 +1,10 @@
 package com.salem.apps.presentation.ui.main.activity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
@@ -10,9 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.salem.apps.data.core.ResponseState
 import com.salem.apps.databinding.ActivityMainBinding
 import com.salem.apps.domain.models.ArticleModel
+import com.salem.apps.presentation.extentions.click
 import com.salem.apps.presentation.extentions.hide
 import com.salem.apps.presentation.extentions.show
 import com.salem.apps.presentation.extentions.viewBinding
+import com.salem.apps.presentation.ui.main.activity.compose.ComposeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -68,9 +72,16 @@ class MainActivity : AppCompatActivity() {
         observeBitCoinsNewsRemoteData()
 
 
+        onBtnComposeClick()
 
 
+    }
 
+    private fun onBtnComposeClick() {
+        binding.btnCompose.click {
+            val intent = Intent(this , ComposeActivity::class.java )
+            startActivity(intent)
+        }
     }
 
     private fun initCoinsRecyclerView() {
@@ -87,7 +98,7 @@ class MainActivity : AppCompatActivity() {
             searchJob?.cancel()
             searchJob = coroutineScope?.launch {
                 delay(500)
-                mainMvvm.getBitCoinsNews(text.toString())
+                mainMvvm.getBitCoinsNews( text.toString() )
             }
         }
     }
@@ -102,19 +113,21 @@ class MainActivity : AppCompatActivity() {
                     }
                     is ResponseState.Success -> {
                         val bitCoinsArticles =  response.data?.articles ?: emptyList()
-                        newsBitCoinAdapter.catchBitcoinList(bitCoinsArticles as ArrayList<ArticleModel>)
-                        binding.progressBar.hide()
-                        Log.e(mainTag , "success $bitCoinsArticles")
+                        if (bitCoinsArticles.isNotEmpty()){
+                            newsBitCoinAdapter.catchBitcoinList(bitCoinsArticles as ArrayList<ArticleModel>)
+                            binding.progressBar.hide()
+                            Log.e( mainTag , "success $bitCoinsArticles")
+                        }
                     }
                     is ResponseState.Error -> {
                         binding.progressBar.hide()
+                        Toast.makeText(this@MainActivity, response.message , Toast.LENGTH_LONG).show()
                         Log.e(mainTag , "error ${response.message}")
                     } else -> Unit
                 }
             }
         }
     }
-
 
     override fun onDestroy() {
         super.onDestroy()

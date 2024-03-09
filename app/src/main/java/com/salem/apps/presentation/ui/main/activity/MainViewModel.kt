@@ -14,16 +14,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-
 @HiltViewModel
-class MainViewModel  @Inject constructor(
+class MainViewModel @Inject constructor(
     private val getBitCoinNewsUseCase: GetBitCoinNewsUseCase
-) : ViewModel(){
+) : ViewModel() {
 
 
     init {
         System.loadLibrary("native-lib")
-        getBitCoinsNews( query = "bitcoin" )
+        getBitCoinsNews(query = "bitcoin")
     }
 
     private external fun getEncryptedApiKey(): String
@@ -33,20 +32,14 @@ class MainViewModel  @Inject constructor(
     val getBitCoinsNewsResponse = _getBitCoinsNewsResponse.asStateFlow()
 
 
-    private var bitCoinsNewsJob : Job ? = null
-    fun getBitCoinsNews( query : String , apiKey : String = getEncryptedApiKey() ){
+    private var bitCoinsNewsJob: Job? = null
+    fun getBitCoinsNews(query: String, apiKey: String = getEncryptedApiKey() ) {
         bitCoinsNewsJob?.cancel()
         bitCoinsNewsJob = viewModelScope.launch(Dispatchers.IO) {
-            getBitCoinNewsUseCase( query , apiKey ).collect{
+            getBitCoinNewsUseCase(query, apiKey).collect {
                 _getBitCoinsNewsResponse.emit(it)
             }
         }
-    }
-
-
-    override fun onCleared() {
-        super.onCleared()
-        bitCoinsNewsJob?.cancel()
     }
 
 
